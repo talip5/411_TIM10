@@ -51,7 +51,7 @@ void Timer10_Disable(void);
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint16_t counter1=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -107,6 +107,10 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  counter1=TIM10->CNT;
+	  if(counter1>38){
+		  Led_On();
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -150,11 +154,11 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV128;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
     Error_Handler();
   }
@@ -218,7 +222,7 @@ void Timer10_Init(void){
 	TIM10->PSC=47999;
 
 	// Reload in every 500 ms
-	TIM10->ARR=499;
+	TIM10->ARR=40;
 
 	// Enable  Timer Update Interrupt
 	TIM10->DIER |=TIM_DIER_UIE;
@@ -242,7 +246,7 @@ void Timer10_Disable(void)
 void TIM1_UP_TIM10_IRQHandler(void)
 {
 	TIM10->SR &=~(TIM_SR_UIF);
-	GPIOD->ODR ^=GPIO_ODR_OD15;
+	//GPIOD->ODR ^=GPIO_ODR_OD15;
 }
 /* USER CODE END 4 */
 
