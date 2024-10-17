@@ -52,6 +52,9 @@ void Timer10_Disable(void);
 
 /* USER CODE BEGIN PV */
 uint16_t counter1=0;
+uint16_t counter2=0;
+uint16_t no=0;
+uint16_t number1=0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -107,10 +110,19 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  counter1=TIM10->CNT;
-	  if(counter1>38){
-		  Led_On();
+	  //counter1=TIM10->SR;
+	  counter1=TIM10->SR & TIM_SR_UIF;
+	  if(counter1==1)
+	  {
+		  GPIOD->ODR |=GPIO_ODR_OD15;
+
 	  }
+
+	 counter2=TIM10->CNT;
+	 //number1++;
+	 // if(counter1>38){
+		//  Led_On();
+	 // }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -219,10 +231,10 @@ void Timer10_Init(void){
 	__HAL_RCC_TIM10_CLK_ENABLE();
 
 	// Timer Clock  48 Mhz / 48.000 = 1000 Hz ( 1ms period )
-	TIM10->PSC=47999;
+	TIM10->PSC=37999;
 
 	// Reload in every 500 ms
-	TIM10->ARR=40;
+	TIM10->ARR=100;
 
 	// Enable  Timer Update Interrupt
 	TIM10->DIER |=TIM_DIER_UIE;
@@ -245,8 +257,11 @@ void Timer10_Disable(void)
 
 void TIM1_UP_TIM10_IRQHandler(void)
 {
-	TIM10->SR &=~(TIM_SR_UIF);
-	//GPIOD->ODR ^=GPIO_ODR_OD15;
+	//GPIOD->ODR |=GPIO_ODR_OD15;
+
+	//TIM10->SR &=~(TIM_SR_UIF);
+
+	no=no+1;
 }
 /* USER CODE END 4 */
 
